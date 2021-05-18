@@ -5,8 +5,10 @@ import scalm.Html._
 import scalm.{Html, Scalm, Style}
 
 object Main {
-  def main(args: Array[String]): Unit =
+  def main(args: Array[String]): Unit = {
     Scalm.start(document.body)(init, update, view)
+    ()
+  }
 
   type Model = String
 
@@ -15,7 +17,7 @@ object Main {
   sealed trait Msg
   case class NewContent(content: String) extends Msg
 
-  def update(msg: Msg, model: Model): Model =
+  val update: (Msg, Model) => Model = (msg, _) =>
     msg match {
       case NewContent(content) => content
     }

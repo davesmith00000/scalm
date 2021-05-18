@@ -1,6 +1,5 @@
 package example
 
-import cats.syntax.either._
 import io.circe.parser._
 import org.scalajs.dom.document
 import scalm.Html._
@@ -9,7 +8,10 @@ import scalm.http.Http
 
 object Main extends App {
 
-  def main(args: Array[String]): Unit = Scalm.start(this, document.body)
+  def main(args: Array[String]): Unit = {
+    Scalm.start(this, document.body)
+    ()
+  }
 
   // MODEL
 
@@ -48,15 +50,17 @@ object Main extends App {
   // HTTP
 
   def decodeGifUrl(json: String): Either[String, String] =
-    parse(json)
-      .leftMap(_.message)
-      .flatMap { json =>
+    parse(json) match {
+      case Right(json) => 
         json.hcursor
           .downField("data")
           .get[String]("image_url")
           .toOption
           .toRight("wrong json format")
-      }
+
+      case Left(parseError) =>
+        Left(parseError.message)
+    }
 
   def getRandomGif(topic: String): Cmd[Msg] = {
     val url =

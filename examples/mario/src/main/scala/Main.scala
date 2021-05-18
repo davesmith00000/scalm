@@ -2,16 +2,16 @@ package mario
 
 import org.scalajs.dom.{document, window}
 import scalm.Html._
-import scalm.Sub._
 import scalm._
 
 import scala.math._
-import cats.syntax.all._
 
 object Main extends App {
 
-  def main(args: Array[String]): Unit =
+  def main(args: Array[String]): Unit = {
     Scalm.start(this, document.querySelector("#mario"))
+    ()
+  }
 
   sealed trait Direction
   case object Left extends Direction

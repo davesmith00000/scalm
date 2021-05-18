@@ -2,27 +2,26 @@ package scalm
 package http
 
 import org.scalajs.dom.raw.XMLHttpRequest
-import cats.implicits._
 import scala.util.Try
 
 object Http {
 
-  /**
-    * Tries to transforms a response body of type String to a value of type A.
+  /** Tries to transforms a response body of type String to a value of type A.
     * @tparam A type of the successfully decoded response
     */
   type Decoder[A] = String => Either[String, A]
 
-  /**
-    * Send an HTTP request.
+  /** Send an HTTP request.
     * @param resultToMessage transforms a successful or failed response into a Msg
     * @param request the request
     * @tparam A type of the successfully decoded response
     * @tparam Msg a scalm Msg
     * @return A Cmd that describes the HTTP request
     */
-  def send[A, Msg](resultToMessage: Either[http.Error, A] => Msg,
-                   request: Request[A]): Cmd[Msg] =
+  def send[A, Msg](
+      resultToMessage: Either[http.Error, A] => Msg,
+      request: Request[A]
+  ): Cmd[Msg] =
     Task
       .RunObservable[http.Error, XMLHttpRequest] { observer =>
         val xhr = new XMLHttpRequest
@@ -44,8 +43,7 @@ object Http {
         } catch {
           case ex: Throwable => observer.onError(BadUrl(ex.getMessage))
         }
-        () =>
-          xhr.abort()
+        () => xhr.abort()
       }
       .attempt(_.flatMap { xhr =>
         val response = Response(
@@ -57,15 +55,15 @@ object Http {
         if (xhr.status < 200 || 300 <= xhr.status) {
           Left(BadStatus(response))
         } else {
-          request
-            .expect(response)
-            .leftMap(BadPayload(_, response))
+          request.expect(response) match {
+            case Right(a) => Right(a)
+            case Left(msg)    => Left(BadPayload(msg, response))
+          }
         }
       })
       .map(resultToMessage)
 
-  /**
-    * Create a GET request and interpret the response body as String.
+  /** Create a GET request and interpret the response body as String.
     * @param url the url
     * @return a GET request
     */
@@ -80,8 +78,7 @@ object Http {
       withCredentials = false
     )
 
-  /**
-    * Create a GET request and try to decode the response body from String to A.
+  /** Create a GET request and try to decode the response body from String to A.
     * @param url the url
     * @param decoder tries to transform the body into some value of type A
     * @tparam A the type of the successfully decoded response
@@ -98,8 +95,7 @@ object Http {
       withCredentials = false
     )
 
-  /**
-    * Create a POST request and try to decode the response body from String to A.
+  /** Create a POST request and try to decode the response body from String to A.
     * @param url the url
     * @param body the body of the POST request
     * @param decoder tries to transform the body into some value of type A
@@ -117,8 +113,7 @@ object Http {
       withCredentials = false
     )
 
-  /**
-    * Create a JSON body. This will automatically add the `Content-Type: application/json` header.
+  /** Create a JSON body. This will automatically add the `Content-Type: application/json` header.
     * @param body the JSON value as String
     * @return a request body
     */
@@ -131,7 +126,8 @@ object Http {
         Try {
           val Array(fst, scd) = h.split(":").map(_.trim()).slice(0, 2)
           (fst, scd)
-        }.toOption)
+        }.toOption
+      )
       .toMap
   }
 }

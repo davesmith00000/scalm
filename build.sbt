@@ -1,15 +1,13 @@
 import sbt.Credentials
 
 enablePlugins(ScalaJSBundlerPlugin)
-addCompilerPlugin("org.typelevel" % "kind-projector" % "0.11.3" cross CrossVersion.full)
 
 name := "scalm"
 organization := "org.julienrf"
 
 Compile / npmDependencies += "snabbdom" -> "0.6.7"
 libraryDependencies ++= Seq(
-  "org.scala-js" %%% "scalajs-dom" % "1.1.0",
-  "org.typelevel" %%% "cats-core" % "2.3.0"
+  "org.scala-js" %%% "scalajs-dom" % "1.1.0"
 )
 
 scalaVersion := "2.13.5"

@@ -1,6 +1,5 @@
 package scalm
 
-import cats.{ApplicativeError, MonoidK}
 import org.scalajs.dom
 import org.scalajs.dom.EventTarget
 import scalm.Task.Observable
@@ -35,6 +34,8 @@ sealed trait Sub[+Msg] { sub1 =>
       case (s1       , Sub.Empty) => s1
       case (s1       , s2)        => Sub.Combine(s1, s2)
     }
+  def <+>[LubMsg >: Msg](sub2: Sub[LubMsg]): Sub[LubMsg] =
+    combine(sub2)
 
 }
 
@@ -74,12 +75,6 @@ object Sub {
   @nowarn // Supposedly can never fail, but is doing an unsafe projection.
   def ofTotalObservable[Msg](id: String, observable: Observable[Nothing, Msg]): Sub[Msg] =
     OfObservable[Nothing, Msg, Msg](id, observable, _.right.get)
-
-  implicit val monoidKSub: MonoidK[Sub] =
-    new MonoidK[Sub] {
-      def empty[A]: Sub[A] = Sub.Empty
-      def combineK[A](sub1: Sub[A], sub2: Sub[A]): Sub[A] = sub1.combine(sub2)
-    }
 
   /**
     * @return A subscription that notifies its subscribers with `msg` after `duration`.
@@ -186,14 +181,6 @@ object Task {
   case class Mapped[Err, Success, Success2](task: Task[Err, Success], f: Success => Success2) extends Task[Err, Success2]
   case class Multiplied[Err, Success, Success2](task1: Task[Err, Success], task2: Task[Err, Success2]) extends Task[Err, (Success, Success2)]
   case class FlatMapped[Err, Success, Success2](task: Task[Err, Success], f: Success => Task[Err, Success2]) extends Task[Err, Success2]
-
-  implicit def applicativeTask[Err]: ApplicativeError[Task[Err, *], Err] =
-    new ApplicativeError[Task[Err, *], Err] {
-      def pure[A](x: A) = Succeeded(x)
-      def raiseError[A](e: Err): Task[Err, A] = Failed(e)
-      def ap[A, B](ff: Task[Err, A => B])(fa: Task[Err, A]): Task[Err, B] = ff.product(fa).map { case (f, a) => f(a) }
-      def handleErrorWith[A](fa: Task[Err, A])(f: Err => Task[Err, A]): Task[Err, A] = Recovered(fa, f)
-    }
 
 }
 

@@ -5,7 +5,10 @@ import scalm.Html._
 import org.scalajs.dom.document
 
 object Main {
-  def main(args: Array[String]): Unit = Scalm.start(document.body)(init, update, view)
+  def main(args: Array[String]): Unit = {
+    Scalm.start(document.body)(init, update, view)
+    ()
+  }
 
   type Model = Int
 
