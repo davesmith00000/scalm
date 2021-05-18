@@ -10,9 +10,11 @@ libraryDependencies ++= Seq(
   "org.scala-js" %%% "scalajs-dom" % "1.1.0"
 )
 
-scalaVersion := "2.13.5"
+scalaVersion := "2.13.6"
 
 publishTo := sonatypePublishTo.value
+
+// scalacOptions ++= Seq("-Xsource:3")
 
 inThisBuild(List(
   licenses := Seq("BSD-3-Clause" -> url("http://opensource.org/licenses/BSD-3-Clause")),
