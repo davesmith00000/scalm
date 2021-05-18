@@ -14,7 +14,7 @@ scalaVersion := "2.13.6"
 
 publishTo := sonatypePublishTo.value
 
-// scalacOptions ++= Seq("-Xsource:3")
+scalacOptions ++= Seq("-Xsource:3")
 
 inThisBuild(List(
   licenses := Seq("BSD-3-Clause" -> url("http://opensource.org/licenses/BSD-3-Clause")),

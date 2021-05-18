@@ -141,10 +141,7 @@ object Html {
     Attribute(
       "style",
       styles
-        .foldLeft(Style.empty) { case (acc, next) =>
-          Style(acc.value ++ next.value)
-        }
-        .value
+        .foldLeft(Style.empty)(_ |+| _).value
     )
 
   def optional[A, M](maybeA: Option[A])(f: A => Attr[M]): Attr[M] =
