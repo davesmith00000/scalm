@@ -13,13 +13,25 @@ import scala.annotation.nowarn
 @js.native
 object snabbdom extends js.Object {
   @nowarn
-  def init(modules: js.Array[js.Object]): js.Function2[VNode | Element, VNode, VNode] = js.native
+  def init(
+      modules: js.Array[js.Object]
+  ): js.Function2[VNode | Element, VNode, VNode] = js.native
 }
 
 @JSImport("snabbdom/h", Default)
 @js.native
-object h extends js.Function3[String, js.UndefOr[js.Any], js.UndefOr[js.Any], VNode] {
-  def apply(selector: String, b: js.UndefOr[js.Any] = js.undefined, c: js.UndefOr[js.Any] = js.undefined): VNode = js.native
+object h
+    extends js.Function3[
+      String,
+      js.UndefOr[js.Any],
+      js.UndefOr[js.Any],
+      VNode
+    ] {
+  def apply(
+      selector: String,
+      b: js.UndefOr[js.Any] = js.undefined,
+      c: js.UndefOr[js.Any] = js.undefined
+  ): VNode = js.native
 }
 
 @js.native
@@ -38,7 +50,10 @@ trait VNodeData extends js.Object
 // --- Convenient syntax
 
 trait SnabbdomSyntax extends Any {
-  final def e(selector: String, opts: js.UndefOr[js.Object] = js.undefined): VNode =
+  final def e(
+      selector: String,
+      opts: js.UndefOr[js.Object] = js.undefined
+  ): VNode =
     _root_.snabbdom.h(selector, opts)
 
   final def h(selector: String, opts: js.Object)(children: VNodeParam*): VNode =

@@ -1,7 +1,6 @@
 package scalm
 
-/**
-  * A component is a typical structure that emerges from your code when you start modularizing it.
+/** A component is a typical structure that emerges from your code when you start modularizing it.
   * You don’t *have to* break down your code into components, but sometimes you do and this class
   * is useful to abstract over them.
   *
@@ -12,23 +11,20 @@ package scalm
   */
 trait Component { parent =>
 
-  /**
-    * Type of state of the component
+  /** Type of state of the component
     */
   type Model
-  /**
-    * Type of messages that this component reacts to
+
+  /** Type of messages that this component reacts to
     */
   type Msg
 
-  /**
-    * @return An HTML view of the given model
+  /** @return An HTML view of the given model
     * @param model the model to render
     */
   def view(model: Model): Html[Msg]
 
-  /**
-    * Performs a state transition: updates the current state and optionally apply a side-effect
+  /** Performs a state transition: updates the current state and optionally apply a side-effect
     * (such as performing an XHR).
     *
     * @return The new value of the model and a command to execute for this state transition
@@ -37,8 +33,7 @@ trait Component { parent =>
     */
   def update(msg: Msg, model: Model): (Model, Cmd[Msg])
 
-  /**
-    * @return The subscriptions of this component for the given state
+  /** @return The subscriptions of this component for the given state
     * @param model current state
     */
   def subscriptions(model: Model): Sub[Msg]
@@ -46,7 +41,8 @@ trait Component { parent =>
   trait Child {
     val child: Component
     def msgCtor: child.Msg => parent.Msg
-    def extractor: PartialFunction[(parent.Model, parent.Msg), (child.Model, child.Msg)]
+    def extractor
+        : PartialFunction[(parent.Model, parent.Msg), (child.Model, child.Msg)]
 
     def html(h: Html[child.Msg]): Html[parent.Msg] = h.map(msgCtor)
     def cmd(c: Cmd[child.Msg]): Cmd[parent.Msg] = c.map(msgCtor)
@@ -55,16 +51,24 @@ trait Component { parent =>
     def view(childModel: child.Model): Html[parent.Msg] =
       child.view(childModel).map(msgCtor)
 
-    def update(model: parent.Model, msg: parent.Msg, modelCtor: child.Model => parent.Model): (parent.Model, Cmd[parent.Msg]) =
+    def update(
+        model: parent.Model,
+        msg: parent.Msg,
+        modelCtor: child.Model => parent.Model
+    ): (parent.Model, Cmd[parent.Msg]) =
       extractor.lift((model, msg)) match {
-        case Some((childModel, childMsg)) => modelAndCmd(child.update(childMsg, childModel), modelCtor)
+        case Some((childModel, childMsg)) =>
+          modelAndCmd(child.update(childMsg, childModel), modelCtor)
         case None => pure(model)
       }
 
     def subscriptions(childModel: child.Model): Sub[parent.Msg] =
       child.subscriptions(childModel).map(msgCtor)
 
-    def modelAndCmd(s: (child.Model, Cmd[child.Msg]), modelCtor: child.Model => parent.Model): (parent.Model, Cmd[parent.Msg]) = {
+    def modelAndCmd(
+        s: (child.Model, Cmd[child.Msg]),
+        modelCtor: child.Model => parent.Model
+    ): (parent.Model, Cmd[parent.Msg]) = {
       val (model, cmd) = s
       (modelCtor(model), cmd.map(msgCtor))
     }
@@ -73,10 +77,13 @@ trait Component { parent =>
 
   object Child {
     def apply(
-      _child: Component
+        _child: Component
     )(
-      _extractor: PartialFunction[(parent.Model, parent.Msg), (_child.Model, _child.Msg)],
-      _msgCtor: _child.Msg => parent.Msg
+        _extractor: PartialFunction[
+          (parent.Model, parent.Msg),
+          (_child.Model, _child.Msg)
+        ],
+        _msgCtor: _child.Msg => parent.Msg
     ): Child { val child: _child.type } =
       new Child {
         val child: _child.type = _child

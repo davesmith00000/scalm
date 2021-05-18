@@ -56,8 +56,8 @@ object Http {
           Left(BadStatus(response))
         } else {
           request.expect(response) match {
-            case Right(a) => Right(a)
-            case Left(msg)    => Left(BadPayload(msg, response))
+            case Right(a)  => Right(a)
+            case Left(msg) => Left(BadPayload(msg, response))
           }
         }
       })
