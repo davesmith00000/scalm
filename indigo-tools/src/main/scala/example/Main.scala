@@ -17,7 +17,7 @@ object Main:
   def view(model: Model): Html[Msg] =
     div(`class`("full-width-container"))(
       TitleBar.view(()),
-      div(`class`("container"))(img("images/bump-example.jpg")())
+      div(`class`("container"))(img(src("images/bump-example.jpg")))
     )
 
   def subscriptions(model: Model): Sub[Msg] =

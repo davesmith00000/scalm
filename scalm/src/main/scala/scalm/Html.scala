@@ -88,10 +88,10 @@ object Html:
   def ul[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M]    = tag("ul")(attributes: _*)(children: _*)
   def li[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M]    = tag("li")(attributes: _*)(children: _*)
 
-  def img(src: String)(attributes: Attr[Nothing]*): Html[Nothing] = tag("img")((Attribute("src", src) +: attributes): _*)()
-  def text(str: String): Text = Text(str)
+  def img(attributes: Attr[Nothing]*): Html[Nothing] = tag("img")(attributes: _*)()
+  def text(str: String): Text                        = Text(str)
 
-  def attrs(as: (String, String)*): Seq[Attr[Nothing]] = as.map(p => Attribute(p._1, p._2))
+  def attrs(as: (String, String)*): Seq[Attr[Nothing]]      = as.map(p => Attribute(p._1, p._2))
   def attributes(as: (String, String)*): Seq[Attr[Nothing]] = as.map(p => Attribute(p._1, p._2))
   def attr(name: String, value: String): Attr[Nothing]      = Attribute(name, value)
 
@@ -112,7 +112,10 @@ object Html:
   def style(styles: (String, String)*): Attr[Nothing] =
     Attribute("style", Monoid.combineAll(styles.map(p => Style(p._1, p._2))).toString)
 
+  def src(path: String): Attr[Nothing]     = Attribute("src", path)
   def id(value: String): Attr[Nothing]     = Attribute("id", value)
+
+  // TODO: Investigate use of Literally for better syntax?
   def `class`(name: String): Attr[Nothing] = Attribute("class", name)
 
   def optional[A, M](maybeA: Option[A])(f: A => Attr[M]): Attr[M] = maybeA.fold[Attr[M]](Attr.Empty)(f)
