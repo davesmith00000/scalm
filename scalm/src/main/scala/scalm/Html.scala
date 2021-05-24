@@ -88,6 +88,7 @@ object Html:
   def ul[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M]    = tag("ul")(attributes: _*)(children: _*)
   def li[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M]    = tag("li")(attributes: _*)(children: _*)
 
+  def img(src: String)(attributes: Attr[Nothing]*): Html[Nothing] = tag("img")((Attribute("src", src) +: attributes): _*)()
   def text(str: String): Text = Text(str)
 
   def attrs(as: (String, String)*): Seq[Attr[Nothing]] = as.map(p => Attribute(p._1, p._2))
