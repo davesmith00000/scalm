@@ -4,6 +4,20 @@ $font-stack: Helvetica, sans-serif;
 $primary-color: #333;
 
 body {
-  font: 3em $font-stack;
+  font: 1em $font-stack;
   color: $primary-color;
+}
+
+// Source mixin
+@mixin make-container($padding-x: $container-padding-x) {
+  width: 100%;
+  padding-right: $padding-x;
+  padding-left: $padding-x;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+// Usage
+.full-width-container {
+  @include make-container();
 }
