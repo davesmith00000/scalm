@@ -12,8 +12,11 @@ lazy val scalm =
       organization := "davesmith00000",
       libraryDependencies ++= Seq(
         ("org.scala-js" %%% "scalajs-dom" % "1.1.0").cross(CrossVersion.for3Use2_13),
-        "org.typelevel" %%% "cats-core"   % "2.6.1"
+        "org.typelevel" %%% "cats-core"   % "2.6.1",
+        "org.scalameta" %%% "munit"       % "0.7.26" % Test
       ),
+      testFrameworks += new TestFramework("munit.Framework"),
+      scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
       publishTo := sonatypePublishTo.value
     )
 
@@ -24,7 +27,11 @@ lazy val indigoTools =
       scalaVersion := "3.0.0",
       name := "indigo-tools",
       scalaJSUseMainModuleInitializer := true,
-      scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
+      scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+      libraryDependencies ++= Seq(
+        "org.scalameta" %%% "munit" % "0.7.26" % Test
+      ),
+      testFrameworks += new TestFramework("munit.Framework")
     )
     .dependsOn(scalm)
 

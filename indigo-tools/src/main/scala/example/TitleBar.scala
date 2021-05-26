@@ -17,4 +17,6 @@ object TitleBar extends Component:
     ((), Cmd.Empty)
 
   def view(model: Model): Html[Msg] =
-    div(`class`("full-width-container"))(text("indigo"))
+    div(`class`("full-width-container")) {
+      text("indigo")
+    }
