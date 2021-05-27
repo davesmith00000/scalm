@@ -48,7 +48,7 @@ object Html:
   def ul[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M]    = tag("ul")(attributes: _*)(children: _*)
   def li[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M]    = tag("li")(attributes: _*)(children: _*)
   def img[M](attributes: Attr[M]*): Html[M]                       = tag("img")(attributes: _*)()
-  def a[M](attributes: Attr[M]*): Html[M]                         = tag("a")(attributes: _*)()
+  def a[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M]     = tag("a")(attributes: _*)(children: _*)
   def br: Html[Nothing]                                           = tag("br")()()
   def hr: Html[Nothing]                                           = tag("hr")()()
   def title[M](attributes: Attr[M]*)(children: Elem[M]*): Html[M] = tag("title")(attributes: _*)(children: _*)
