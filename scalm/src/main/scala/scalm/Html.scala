@@ -81,8 +81,9 @@ object Html:
     onEvent("input", (e: dom.Event) => msg(e.target.asInstanceOf[HTMLInputElement].value))
   def onEvent[E <: org.scalajs.dom.Event, M](name: String, msg: E => M): Attr[M] = Event(name, msg)
 
-  def style(s: String): Attr[Nothing]       = Attribute("style", s)
-  def styles(styles: Style*): Attr[Nothing] = Attribute("style", Monoid.combineAll(styles).toString)
+  def style(s: String): Attr[Nothing]                   = Attribute("style", s)
+  def style(name: String, value: String): Attr[Nothing] = Attribute("style", Style(name, value).toString)
+  def styles(styles: Style*): Attr[Nothing]             = Attribute("style", Monoid.combineAll(styles).toString)
   @targetName("style_tuples")
   def styles(styles: (String, String)*): Attr[Nothing] =
     Attribute("style", Monoid.combineAll(styles.map(p => Style(p._1, p._2))).toString)
