@@ -20,36 +20,13 @@ lazy val scalm =
       publishTo := sonatypePublishTo.value
     )
 
-lazy val indigoTools =
-  (project in file("indigo-tools"))
-    .enablePlugins(ScalaJSPlugin)
-    .settings(
-      scalaVersion := "3.0.0",
-      name := "indigo-tools",
-      scalaJSUseMainModuleInitializer := true,
-      scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-      libraryDependencies ++= Seq(
-        "org.scalameta" %%% "munit" % "0.7.26" % Test
-      ),
-      testFrameworks += new TestFramework("munit.Framework")
-    )
-    .dependsOn(scalm)
-
-lazy val root =
+lazy val scalmProject =
   (project in file("."))
     .settings(
       code := { "code ." ! }
     )
     .enablePlugins(ScalaJSPlugin)
-    .aggregate(scalm, indigoTools)
+    .aggregate(scalm)
 
 lazy val code =
   taskKey[Unit]("Launch VSCode in the current directory")
-
-addCommandAlias(
-  "buildTools",
-  List(
-    "compile",
-    "indigoTools/fastOptJS"
-  ).mkString(";", ";", "")
-)
